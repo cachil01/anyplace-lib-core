@@ -1,0 +1,60 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'publishing'
+}
+
+group 'cy.ac.ucy.cs.anyplace.core'
+version '1.0'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // core dependencies
+    implementation group: 'org.json', name: 'json', version: '20180813'
+    implementation 'com.squareup.okhttp3:okhttp:4.3.1'
+    implementation 'com.squareup.okio:okio:2.4.1'
+
+    // testing
+    //testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'junit:junit:4.13'
+    testCompile ('org.junit.jupiter:junit-jupiter:5.6.0')
+
+}
+
+// JAR library generation
+jar { manifest {
+//    attributes 'Main-Class': 'cy.ac.ucy.cs.anyplace.core.CLI'
+}
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    tasks.withType(Jar) {
+        //        destinationDirectory = file("$rootDir/../bin/")
+        destinationDirectory = file("$rootDir/../bin/")
+        archiveFileName = "anyplace-core.jar"
+    }
+}
+
+// Run cli task
+//task run_cli(type: JavaExec) {
+//    classpath sourceSets.main.runtimeClasspath
+//    main = "cy.ac.ucy.cs.anyplace.core.CLI"
+//    args "arg1", "arg2"
+//}
+test {
+    useJUnit(){
+        includeCategories 'Buildtests'
+        excludeCategories 'NoConfigTests'
+    }
+
+    testLogging.showStandardStreams = true
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+
+
